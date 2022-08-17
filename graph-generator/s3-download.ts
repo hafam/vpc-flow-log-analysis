@@ -32,8 +32,19 @@ const downloadLogs = async (): Promise<string[]> => {
     const bucket = process.env.AWS_S3_BUCKET_NAME;
 
     const s3 = new AWS.S3();
-    const objects = await s3.listObjects({ Bucket: bucket }).promise();
-
+    //const objects = await s3.listObjects({ Bucket: bucket }).promise();
+    const objects = await s3.listObjects({ Bucket: bucket, Prefix: 'vpcflow/s3-folder-path/2022/08/06/' }).promise();
+    const filteredLog = objects.Contents.filter(item => {
+        //filter log
+        if (item.Key.includes('logfile-name-include-ex:_20220817T10')){
+            //console.log(item.Key);
+            return item;
+        }
+        if (item.Key.includes('logfile-name-include-ex:_20220817T11')){
+            //console.log(item.Key);
+            return item;
+        }
+        
     const filePaths: string[] = await Promise.all((objects.Contents || []).map(async object => {
         const data = await s3.getObject({ Key: object.Key, Bucket: bucket }).promise();
 
